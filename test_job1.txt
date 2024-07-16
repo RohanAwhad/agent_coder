@@ -1,0 +1,1 @@
+I want to create a program that will take in an image, find the people in the image, and return a count of total, male and female. Include a main function that will run all the other functions in order.

@@ -1,0 +1,1 @@
+Given a basketball video of not more than 5 mins, I want to track position of the ball on the court in 2D, height and width. And then save the coords in parquet file for each second. Use pandas dataframe to manipulate the data in-between. Also have a "main" or "run" function that will run all the other functions in order to achieve the task.

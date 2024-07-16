@@ -79,6 +79,7 @@ Step 2: Test with one positive and one negative float.
 Step 3: Test multiplying by zero.
 Step 4: Test with very small numbers to check for underflow.
 </planning>
+
 <python>
 import pytest
 
@@ -109,6 +110,7 @@ Step 2: Test known non-prime numbers.
 Step 3: Test the smallest numbers, including negative numbers and zero.
 Step 4: Test a very large prime number.
 </planning>
+
 <python>
 import pytest
 
@@ -120,6 +122,9 @@ def test_is_prime_false():
 
 def test_is_prime_small():
     assert is_prime(1) == False and is_prime(2) == True, "Testing smallest numbers"
+
+def test_is_prime_negative():
+    assert is_prime(-5) == False, "Negative numbers are not prime"
 
 def test_is_prime_large():
     assert is_prime(7919) == True, "7919 is a large prime number"

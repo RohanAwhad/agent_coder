@@ -1,0 +1,110 @@
+"""
+<planning>
+**Thought Process:**
+
+1. **Video Frame Extraction**:
+   - We need to load the video and extract frames to analyze images instead of the video stream.
+   - Input: Video file path.
+   - Output: A sequence of video frames.
+
+2. **Ball Position Tracking**:
+   - For each frame, we will track the ball's position on the court.
+   - Input: Frame from the video.
+   - Output: 2D coordinates (x, y) of the ball's position.
+
+3. **Video Metadata Extraction**:
+   - Extract metadata from the video to understand dimensions and frame rate, which are essential to estimate the height and width.
+   - Input: Video file path.
+   - Output: Video dimensions and frame rate.
+
+4. **Dataframe Creation and Manipulation**:
+   - Combine the ball's position data over time into a pandas DataFrame.
+   - Input: Sequence of ball positions per frame.
+   - Output: DataFrame with time, x, y coordinates, and possibly height and width.
+
+5. **Data Saving**:
+   - Save the DataFrame to a parquet file for efficient storage and future data analysis.
+   - Input: DataFrame to save.
+   - Output: Parquet file path.
+
+6. **Main Function Execution**:
+   - A main function will orchestrate the sequence of steps from frame extraction to data saving.
+   - Input: Video file path.
+   - Output: Parquet file path.
+</planning>
+<yaml>
+requirements:
+  - task_description: "Load a video and extract frames to be analyzed."
+    function_signature: "def extract_video_frames(video_path: str) -> Generator[np.ndarray, None, None]:"
+    docstring: |
+      Extract frames from the input video, yielding each frame to be processed.
+
+      Parameters:
+      - video_path (str): The path to the video file to be loaded.
+
+      Yields:
+      - np.ndarray: A frame from the video, ready for processing.
+
+  - task_description: "Track the ball's position in 2D on the court for each frame."
+    function_signature: "def track_ball_position(frame: np.ndarray) -> Tuple[int, int]:"
+    docstring: |
+      Track the ball's position in the frame.
+
+      Parameters:
+      - frame (np.ndarray): The frame from which the ball's position is to be determined.
+
+      Returns:
+      - Tuple[int, int]: A tuple of 2D coordinates (x, y) representing the ball's position.
+
+  - task_description: "Extract metadata from the video to get dimensions and frame rate."
+    function_signature: "def get_video_metadata(video_path: str) -> Dict[str, Union[int, float]]:"
+    docstring: |
+      Extract essential video metadata including dimensions and frame rate.
+
+      Parameters:
+      - video_path (str): The path to the video file.
+
+      Returns:
+      - Dict[str, Union[int, float]]: A dictionary with keys 'width', 'height', and 'frame_rate' mapped to their respective values.
+
+  - task_description: "Create a DataFrame from the ball's position data over time."
+    function_signature: "def create_ball_position_dataframe(frames: List[np.ndarray], positions: List[Tuple[int, int]]) -> pd.DataFrame:"
+    docstring: |
+      Create a DataFrame to store the ball's position data over time.
+
+      Parameters:
+      - frames (List[np.ndarray]): A list of frames extracted from the video.
+      - positions (List[Tuple[int, int]]): A list of tuples representing the ball's positions corresponding to each frame.
+
+      Returns:
+      - pd.DataFrame: A DataFrame containing time, x, y coordinates for ball positions.
+
+  - task_description: "Save the DataFrame to a parquet file for efficient storage and future data analysis."
+    function_signature: "def save_dataframe_to_parquet(df: pd.DataFrame, file_path: str) -> str:"
+    docstring: |
+      Save the DataFrame to a parquet file.
+
+      Parameters:
+      - df (pd.DataFrame): The DataFrame to be saved.
+      - file_path (str): The path where the parquet file will be saved.
+
+      Returns:
+      - str: The path to the saved parquet file.
+
+  - task_description: "Orchestrate the entire process from frame extraction to data saving."
+    function_signature: "def run_ball_tracking(video_path: str, parquet_path: str) -> str:"
+    docstring: |
+      Execute the entire process of extracting video frames, tracking ball positions, creating a DataFrame, and saving to parquet.
+
+      Parameters:
+      - video_path (str): The path to the video file to be processed.
+      - parquet_path (str): The path where the parquet file will be saved.
+
+      Returns:
+      - str: The path to the saved parquet file containing the ball's position data.
+</yaml>
+"""
+
+Given the above data. Create a flowchart in Mermaid that shows which function calls which other function.
+
+First describe the thought process in <planning> ... </planning> tags, then move on to write the Mermaid flowchart.
