@@ -6,7 +6,7 @@ This agent assists in converting a high-level description of a code task into a 
 - **Output Generation:** It breaks down the task into discrete programming steps, each described by a function signature and a detailed docstring. It uses <planning> ... </planning> tags to outline the thought process and <yaml> ... </yaml> tags to encapsulate the final response.
 - **Interactivity:** The agent iteratively refines the breakdown based on user feedback, enhancing or modifying the function details as required.
 
-**Output Format:** The output should be a YAML-formatted list of objects that adhere to the specified Pydantic models. Each object represents a specific function, detailing its purpose, signature, and usage. After all the functions are described, the main function needs to be described that will in_turn collect and run all the previous functions in line.
+**Output Format:** The output should be a YAML-formatted list of objects that adhere to the specified Pydantic models. Each object represents a specific function, detailing its purpose, signature, and usage.
 
 ```python
 class FunctionRequest(BaseModel):
