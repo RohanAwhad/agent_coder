@@ -1,0 +1,126 @@
+**Objective:** Generate test cases for a Python function based on its signature and docstring.
+
+**Input Format:** The input consists of the function signature and its associated docstring. These follow the below Pydantic models.
+
+```python
+class FunctionInput(BaseModel):
+    signature: str
+    docstring: str
+```
+
+**Output Format:** The output should be a series of Python test functions, each aimed at testing various aspects of the target function. The test cases should encompass basic functionality, edge cases, and performance under large input sizes. All output should be enclosed within specific tags as follows:
+
+<python>
+# Test cases here
+</python>
+
+**Instructions:**
+1. Analyze the function signature and docstring to understand the function's purpose and parameters.
+2. Enclose your step-by-step planning on how to approach the test case design within `<planning>...</planning>` tags.
+3. Generate multiple test functions:
+   - Basic tests to check standard functionality.
+   - Edge tests to handle boundary conditions and unusual input scenarios.
+   - Long tests to assess performance with large-scale inputs.
+4. Wrap all test functions within the `<python>...</python>` tag to ensure proper formatting.
+
+**Detailed Planning Steps:**
+Step 1: Extract parameter types and expected outputs from the docstring and signature.
+Step 2: Identify any constraints or special conditions mentioned in the docstring.
+Step 3: Design a basic test case using typical input values.
+Step 4: Create edge cases focusing on boundary values and minimal/maximal inputs.
+Step 5: Construct long tests using large data sets to evaluate performance and scalability.
+Step 6: Organize the test cases to ensure each one is unique and covers different aspects of the function behavior.
+
+---
+
+Below are a few examples of detailed test function prompts for different Python function signatures using Pytest. These examples incorporate YAML formatted inputs following the Pydantic structure described above.
+
+#### Example 1:
+Input>
+```yaml
+signature: "add_numbers(a: int, b: int) -> int"
+docstring: "Takes two integers a and b, returns their sum."
+```
+
+Output>
+<planning>
+Step 1: Test with positive numbers.
+Step 2: Test with negative numbers to ensure subtraction is handled correctly.
+Step 3: Test with zero to verify identity property of addition.
+Step 4: Test with mixed sign inputs.
+</planning>
+<python>
+import pytest
+
+def test_add_numbers_positive():
+    assert add_numbers(2, 3) == 5, "Should return the sum of two positive integers"
+
+def test_add_numbers_negative():
+    assert add_numbers(-2, -3) == -5, "Should return the sum of two negative integers"
+
+def test_add_numbers_zero():
+    assert add_numbers(0, 0) == 0, "Should return zero for two zeros"
+
+def test_add_numbers_mixed():
+    assert add_numbers(-1, 2) == 1, "Should handle mixed sign inputs correctly"
+</python>
+
+#### Example 2:
+Input>
+```yaml
+signature: "multiply_numbers(x: float, y: float) -> float"
+docstring: "Takes two floats x and y, returns their product."
+```
+
+Output>
+<planning>
+Step 1: Test with two positive floats.
+Step 2: Test with one positive and one negative float.
+Step 3: Test multiplying by zero.
+Step 4: Test with very small numbers to check for underflow.
+</planning>
+<python>
+import pytest
+
+def test_multiply_numbers_positive():
+    assert multiply_numbers(2.5, 4.0) == 10.0, "Product of two positive floats"
+
+def test_multiply_numbers_negative():
+    assert multiply_numbers(-2.5, 4.0) == -10.0, "Product of a negative and a positive float"
+
+def test_multiply_numbers_zero():
+    assert multiply_numbers(0, 5.5) == 0, "Product with zero should be zero"
+
+def test_multiply_numbers_small():
+    assert multiply_numbers(0.0001, 0.0002) == 0.00000002, "Handling small numbers multiplication"
+</python>
+
+#### Example 3:
+Input>
+```yaml
+signature: "is_prime(n: int) -> bool"
+docstring: "Determines if the integer n is a prime number."
+```
+
+Output>
+<planning>
+Step 1: Test known prime numbers.
+Step 2: Test known non-prime numbers.
+Step 3: Test the smallest numbers, including negative numbers and zero.
+Step 4: Test a very large prime number.
+</planning>
+<python>
+import pytest
+
+def test_is_prime_true():
+    assert is_prime(7) == True, "7 is a prime number"
+
+def test_is_prime_false():
+    assert is_prime(4) == False, "4 is not a prime number"
+
+def test_is_prime_small():
+    assert is_prime(1) == False and is_prime(2) == True, "Testing smallest numbers"
+
+def test_is_prime_large():
+    assert is_prime(7919) == True, "7919 is a large prime number"
+</python>
