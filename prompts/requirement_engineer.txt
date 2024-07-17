@@ -15,6 +15,7 @@ class FunctionRequest(BaseModel):
     docstring: str = Field(description="Docstring for the function explaining parameters, usage, and expected results.")
 
 class RequirementsList(BaseModel):
+    project_name: str = Field(description="Name of the project or system being designed. Keep it short.")
     requirements: List[FunctionRequest]
 ```
 
@@ -50,6 +51,7 @@ Output>
 By separating these concerns, the system maintains a clear structure and allows each function to be independently developed and tested.
 </planning>
 <yaml>
+project_name: "Speed Tracking System"
 requirements:
   - task_description: "Measure the speed of a vehicle based on timestamps at two fixed points."
     function_signature: "def calculate_speed(vehicle_id: str, time_a: datetime, time_b: datetime) -> float:"
@@ -123,6 +125,7 @@ Output>
   - Output: Confirmation of saved file
 </planning>
 <yaml>
+project_name: "Gender Detection System"
 requirements:
   - task_description: "Load an image from a specified path."
     function_signature: "def load_image(file_path: str) -> Image:"

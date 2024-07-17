@@ -11,6 +11,7 @@ class FunctionInput(BaseModel):
 **Output Format:** The output should be a series of Python test functions, each aimed at testing various aspects of the target function. The test cases should encompass basic functionality, edge cases, and performance under large input sizes. All output should be enclosed within specific tags as follows:
 
 <python>
+# filename.py
 # Test cases here
 </python>
 
@@ -22,6 +23,7 @@ class FunctionInput(BaseModel):
    - Edge tests to handle boundary conditions and unusual input scenarios.
    - Long tests to assess performance with large-scale inputs.
 4. Wrap all test functions within the `<python>...</python>` tag to ensure proper formatting.
+5. All the functions to test will be in `main.py` file, so `import main` to access the functions.
 
 **Detailed Planning Steps:**
 Step 1: Extract parameter types and expected outputs from the docstring and signature.
@@ -50,19 +52,23 @@ Step 3: Test with zero to verify identity property of addition.
 Step 4: Test with mixed sign inputs.
 </planning>
 <python>
+# test_add_numbers.py
+
 import pytest
 
+import main
+
 def test_add_numbers_positive():
-    assert add_numbers(2, 3) == 5, "Should return the sum of two positive integers"
+    assert main.add_numbers(2, 3) == 5, "Should return the sum of two positive integers"
 
 def test_add_numbers_negative():
-    assert add_numbers(-2, -3) == -5, "Should return the sum of two negative integers"
+    assert main.add_numbers(-2, -3) == -5, "Should return the sum of two negative integers"
 
 def test_add_numbers_zero():
-    assert add_numbers(0, 0) == 0, "Should return zero for two zeros"
+    assert main.add_numbers(0, 0) == 0, "Should return zero for two zeros"
 
 def test_add_numbers_mixed():
-    assert add_numbers(-1, 2) == 1, "Should handle mixed sign inputs correctly"
+    assert main.add_numbers(-1, 2) == 1, "Should handle mixed sign inputs correctly"
 </python>
 
 #### Example 2:
@@ -81,19 +87,23 @@ Step 4: Test with very small numbers to check for underflow.
 </planning>
 
 <python>
+# test_multiply_numbers.py
+
 import pytest
 
+import main
+
 def test_multiply_numbers_positive():
-    assert multiply_numbers(2.5, 4.0) == 10.0, "Product of two positive floats"
+    assert main.multiply_numbers(2.5, 4.0) == 10.0, "Product of two positive floats"
 
 def test_multiply_numbers_negative():
-    assert multiply_numbers(-2.5, 4.0) == -10.0, "Product of a negative and a positive float"
+    assert main.multiply_numbers(-2.5, 4.0) == -10.0, "Product of a negative and a positive float"
 
 def test_multiply_numbers_zero():
-    assert multiply_numbers(0, 5.5) == 0, "Product with zero should be zero"
+    assert main.multiply_numbers(0, 5.5) == 0, "Product with zero should be zero"
 
 def test_multiply_numbers_small():
-    assert multiply_numbers(0.0001, 0.0002) == 0.00000002, "Handling small numbers multiplication"
+    assert main.multiply_numbers(0.0001, 0.0002) == 0.00000002, "Handling small numbers multiplication"
 </python>
 
 #### Example 3:
@@ -112,20 +122,24 @@ Step 4: Test a very large prime number.
 </planning>
 
 <python>
+# test_is_prime.py
+
 import pytest
 
+import main
+
 def test_is_prime_true():
-    assert is_prime(7) == True, "7 is a prime number"
+    assert main.is_prime(7) == True, "7 is a prime number"
 
 def test_is_prime_false():
-    assert is_prime(4) == False, "4 is not a prime number"
+    assert main.is_prime(4) == False, "4 is not a prime number"
 
 def test_is_prime_small():
-    assert is_prime(1) == False and is_prime(2) == True, "Testing smallest numbers"
+    assert main.is_prime(1) == False and is_prime(2) == True, "Testing smallest numbers"
 
 def test_is_prime_negative():
-    assert is_prime(-5) == False, "Negative numbers are not prime"
+    assert main.is_prime(-5) == False, "Negative numbers are not prime"
 
 def test_is_prime_large():
-    assert is_prime(7919) == True, "7919 is a large prime number"
+    assert main.is_prime(7919) == True, "7919 is a large prime number"
 </python>
