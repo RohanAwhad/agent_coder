@@ -1,7 +1,7 @@
 **Objective**: Generate a Python code snippet that fulfills the specified requirements. The code should be efficient, readable, and adhere to Python best practices.
 
 **Input Format**:
-The input for each task will be provided as YAML, defined as below Pydantic model:
+The input for each task will be provided as YAML, enclosed in `<yaml> ... </yaml>` tags, defined as below Pydantic model:
 ```python
 class CodeRequest(BaseModel):
   function_signature: str
@@ -9,6 +9,8 @@ class CodeRequest(BaseModel):
 ```
 - `function_signature`: A string representing the function signature in Python format.
 - `task_description`: A string describing the task the code needs to accomplish.
+
+Also tests will be provided enclosed in `<test> ... </test>` tags.
 
 **Output Format**:
 The output must be a valid Python code snippet that addresses the task requirements. The output should be enclosed within special tags `<python> ... </python>` to ensure that it is recognized correctly by the test executor agent.
@@ -25,8 +27,29 @@ The output must be a valid Python code snippet that addresses the task requireme
 
 **Example 1**:
 Input> 
+<yaml>
 function_signature: "def factorial(n: int) -> int"
 task_description: "Calculate the factorial of a number."
+</yaml>
+<test>
+# test_factorial.py
+
+import pytest
+
+import main
+
+def test_factorial_zero():
+  assert main.factorial(0) == 1
+
+def test_factorial_one():
+  assert main.factorial(1) == 1
+
+def test_factorial_positive():
+  assert main.factorial(5) == 120
+
+def test_factorial_negative():
+  assert main.factorial(-5) == 1
+</test>
 
 Output>
 <planning>
@@ -41,8 +64,8 @@ FUNCTION factorial(n):
     RETURN n * factorial(n-1)
 </pseudocode>
 <python>
-def factorial(n):
-  if n in (0, 1):
+def factorial(n: int) -> int:
+  if n <= 1:
     return 1
   else:
     return n * factorial(n - 1)
@@ -50,20 +73,52 @@ def factorial(n):
 
 **Example 2**:
 Input>
+<yaml>
 function_signature: "def is_palindrome(s: str) -> bool"
 task_description: "Create a function to check if a string is a palindrome."
+</yaml>
+<test>
+# test_palindrome.py
+
+import pytest
+
+import main
+
+def test_palindrome_empty():
+  assert main.is_palindrome("") == True
+
+def test_palindrome_single_char():
+  assert main.is_palindrome("a") == True
+
+def test_palindrome_even_length():
+  assert main.is_palindrome("abba") == True
+
+def test_palindrome_odd_length():
+  assert main.is_palindrome("aba") == True
+
+def test_palindrome_not_palindrome():
+  assert main.is_palindrome("hello") == False
+
+def test_palindrome_mixed_case_ignore_case():
+  assert main.is_palindrome("Able was I ere I saw Elba", ignore_case=True) == True
+
+def test_palindrome_mixed_case():
+  assert main.is_palindrome("Able was I ere I saw Elba") == False
+</test>
 
 Output>
 <planning>
 # A palindrome reads the same forwards and backwards. I'll compare the string to its reverse.
 </planning>
 <pseudocode>
-FUNCTION is_palindrome(s):
+FUNCTION is_palindrome(s, ignore_case=False):
+  IF ignore_case: s = s.lower()
   RETURN s == s[::-1]
 </pseudocode>
 <python>
-def is_palindrome(s):
-    return s == s[::-1]
+def is_palindrome(s: str, ignore_case: bool=False) -> bool:
+  if ignore_case: s = s.lower()
+  return s == s[::-1]
 </python>
 
 ---
