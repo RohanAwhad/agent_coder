@@ -12,8 +12,10 @@ The programmer will write out the functions that are being asked for in a single
 
 ### ToDos:
 - [ ] The prompt for requirement engineer should take into account all the necessary information that is given. Eg. model names, frameworks to use, etc.
-- [ ] Test Executor Agent
-- [ ] Being able to write env.yaml for conda environments
+- [x] Test Executor Agent
+- [x] Being able to write env.yaml for conda environments
+- [ ] Web search for programmer and test designer and brain
+- [ ] Use Unstructed.io to parse html
 
 
 # Brain Dump

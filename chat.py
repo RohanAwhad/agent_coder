@@ -38,11 +38,11 @@ class History:
 # ===
 @dataclasses.dataclass
 class Agent:
-  model: str
   name: str
   sys_prompt: str
   max_tokens: int
   history: History
+  model: str = "gpt-4-turbo"
   temperature: float = 0.8
 
 
@@ -136,10 +136,13 @@ class Project:
   def rewrite_portion(self, filepath: str, content: str, start_line: int, end_line: int) -> str:
     curr_text = utils.load_text(f"{self.project_path}/{filepath}")
     curr_text_lines = curr_text.split("\n")
-    curr_text_lines = curr_text_lines[:start_line-1] + content.split("\n") + curr_text_lines[end_line:]
+    curr_text_lines = curr_text_lines[:start_line] + content.split("\n") + curr_text_lines[end_line+1:]
     new_text = "\n".join(curr_text_lines)
     utils.save_text(new_text, f"{self.project_path}/{filepath}")
     return get_diff(curr_text, new_text)
+
+  def delete_portion(self, filepath: str, start_line: int, end_line: int) -> str:
+    return self.rewrite_portion(filepath, "", start_line, end_line)
 
   def list_files(self, folderpath: str) -> str:
     files = os.listdir(f"{self.project_path}/{folderpath}")
@@ -173,11 +176,10 @@ class Project:
 # LLM
 # ===
 client = openai.OpenAI(
-  api_key=os.environ.get("TOGETHER_API_KEY"),
-  base_url="https://api.together.xyz/v1",
+  api_key=os.environ.get("OPENAI_API_KEY"),
+  # api_key=os.environ.get("TOGETHER_API_KEY"),
+  # base_url="https://api.together.xyz/v1",
 )
-
-
 
 
 def generate_response(agent: Agent, prompt: str, history: Optional[History] = None) -> str:
@@ -203,7 +205,7 @@ def generate_response(agent: Agent, prompt: str, history: Optional[History] = No
 def create_employee(job_role: str, employee_name: str):
   if job_role == "requirement_engineer":
     ret = Agent(
-      model="Qwen/Qwen2-72B-Instruct",
+      # model="Qwen/Qwen2-72B-Instruct",
       name=employee_name,
       sys_prompt=utils.load_text("prompts/requirement_engineer.txt"),
       max_tokens=2048,
@@ -212,7 +214,7 @@ def create_employee(job_role: str, employee_name: str):
     )
   elif job_role == "test_designer":
     ret = Agent(
-      model="deepseek-ai/deepseek-coder-33b-instruct",
+      # model="deepseek-ai/deepseek-coder-33b-instruct",
       name=employee_name,
       sys_prompt=utils.load_text("prompts/test_designer_agent.txt"),
       max_tokens=2048,
@@ -221,7 +223,7 @@ def create_employee(job_role: str, employee_name: str):
     )
   elif job_role == "programmer":
     ret = Agent(
-      model="deepseek-ai/deepseek-coder-33b-instruct",
+      # model="deepseek-ai/deepseek-coder-33b-instruct",
       name=employee_name,
       sys_prompt=utils.load_text("prompts/programmer_agent.txt"),
       max_tokens=2048,
@@ -230,7 +232,7 @@ def create_employee(job_role: str, employee_name: str):
     )
   elif job_role == "environment_designer":
     ret = Agent(
-      model="Qwen/Qwen2-72B-Instruct",
+      # model="Qwen/Qwen2-72B-Instruct",
       name=employee_name,
       sys_prompt=utils.load_text("prompts/environment_designer_agent.txt"),
       max_tokens=2048,
@@ -245,7 +247,7 @@ def create_employee(job_role: str, employee_name: str):
 
 if __name__ == '__main__':
   brain = Agent(
-    model="Qwen/Qwen2-72B-Instruct",
+    # model="Qwen/Qwen2-72B-Instruct",
     name="Brain",
     sys_prompt=utils.load_text("prompts/brain.txt"),
     max_tokens=2048,
@@ -288,6 +290,11 @@ if __name__ == '__main__':
         employee_name = args['employee_name']
         employee = employees[employee_name]
         msg_to_employee = args['msg']
+        if "<test>" in res:
+          test_pattern = re.compile(r"<test>(.*?)</test>", re.DOTALL)
+          match = test_pattern.search(res)
+          test = match.group(1)
+          msg_to_employee += f"\n<test>\n{test}</test>"
         emp_res = generate_response(employee, msg_to_employee, employee.history)
         employee.history.add("user", msg_to_employee)
         employee.history.add("assistant", emp_res)
@@ -327,6 +334,10 @@ if __name__ == '__main__':
         prompt = project.rewrite_portion(content=content, **args)
         prompt = "Content rewritten successfully. Below is the diff\n" + prompt
 
+      elif tool_uid == "delete_portion":
+        prompt = project.delete_portion(**args)
+        prompt = "Content deleted successfully. Below is the diff\n" + prompt
+
       elif tool_uid == "list_files":
         prompt = project.list_files(**args)
 
@@ -346,6 +357,9 @@ if __name__ == '__main__':
         prompt = project.run_commands(**args)
       elif tool_uid == "run_python_file":
         prompt = project.run_python(**args)
+
+      elif tool_uid == "search_web":
+        prompt = utils.search_web(args['query'])
       else:
         raise ValueError("Invalid tool UID.")
 
